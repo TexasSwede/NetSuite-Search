@@ -16,10 +16,8 @@ If no recordid is provided, it has to be added later through a call to setRecord
 Define a column to be returned with the search result. The first parameter is required, and is a string containing the internalid of the field to return.
 The second parameter is optional. It is the join to use, and it is a string containing the internalid of the field to use for the join.
 The last parameter is optional. It is a boolean value, true for descending sort order, false for ascending. Omitted or null means no sorting is done.     
-See `nlobjSearchColumn` in SuiteAnswers for more details.
-
-#####or
-
+See `nlobjSearchColumn` in SuiteAnswers for more details.  
+or  
 `addColumn(object)`  
 Object values:  
 - columnName	- String, required. The search return column name.
@@ -44,7 +42,7 @@ Accepting an array of objects identical to the one used in `addColumn`.
 
 ## Function addFilter  
 `addFilter(object)`  
-####or  
+or   
 `addFilter(fieldname, join, operator, value)`  
 Define a column to be returned with the search result. 
 See `nlobjSearchFilter` in SuiteAnswers.
