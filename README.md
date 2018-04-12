@@ -6,7 +6,7 @@ It also has the advantage of making the code shorter, cleaner and easier to read
 
 ## Constructor 
 `Search()`  
-####or  
+or  
 `Search(recordid)`  
 The constructor can be called with or without the internalid of the record type to search for. 
 If no recordid is provided, it has to be added later through a call to setRecordType(), or the search will fail.
@@ -20,18 +20,11 @@ See `nlobjSearchColumn` in SuiteAnswers for more details.
 or  
 `addColumn(object)`  
 Object values:  
-- columnName	- String, required. The search return column name.
-- name		    - alias for columnName  
+- columnName	- String, required. The search return column name. Alias: _name_ and _column_.
 - join        - String, optional. The join id for this search return column.  
-- summary     - String, optional. Can be any of the NetSuite summary values:  
-                  group  
-                  sum  
-                  count  
-                  avg  
-                  min  
-                  max  
+- summary     - String, optional. Can be any of the NetSuite summary values:  _group, sum, count, avg, min_, or _max_.
 - sorted		  - Boolean or String, optional. If not set, defaults to false, which returns column data in ascending order. If set to true, data is returned in descending order. Can also use "acending"/"asc" and "descending"/"desc" as alternative.
-- formula     - String, optional. Set the formula used for this column. Name of the column can either be formulatext, formulanumeric, formuladatetime, formulapercent, or formulacurrency.
+- formula     - String, optional. Set the formula used for this column. Name of the column can either be _formulatext, formulanumeric, formuladatetime, formulapercent_, or _formulacurrency_.
 - functionId  - String, optional. Sets the special function used for this column. See `.setFunction()` in SuiteAnswers foir more info.
 
 
@@ -41,12 +34,14 @@ Accepting an array of objects identical to the one used in `addColumn`.
 
 
 ## Function addFilter  
-`addFilter(object)`  
-or   
-`addFilter(fieldname, join, operator, value)`  
 Define a column to be returned with the search result. 
-See `nlobjSearchFilter` in SuiteAnswers.
 
+`addFilter(fieldname, join, operator, value)`  
+
+See `nlobjSearchFilter` in SuiteAnswers.
+or
+`addFilter(object)`  
+  
 Object values:  
 - field  
 - join  
