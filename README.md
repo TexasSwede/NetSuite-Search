@@ -1,7 +1,7 @@
 # NetSuite-Search
 
 This library encapsulates the NetSuite search functionality and simplifies writing searches in SuiteScript 1.0.
-It also has the advantage of making the code shorter, cleaner and easier to read/maintain, while still keeping the 
+It also has the advantage of making the code shorter, cleaner and easier to read/maintain. It also handles cases where more than 1000 search results are returned. 
 
 
 ## Constructor 
