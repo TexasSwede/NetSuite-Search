@@ -10,6 +10,8 @@
  * 3.0        20 Nov 2017     kmartinsson      Removed v1.x code stream, renamed Search2 to Search
  * 3.0.1      06 Dec 2017     kmartinsson      Added JSDoc style comments, updated comments to new JSDoc style
  * 3.0.2      28 Feb 2018     kmartinsson      Fixed bug in sort key which prevented proper sorting. Added alternative keys.
+ * 3.0.3      15 Jul 2018     kmartinsson      Added filter expression support
+ * 3.0.4      01 Oct 2018     kmartinsson      Added method removeColumns() for use on (external) saved search
  * 
  */
 
@@ -25,20 +27,30 @@ function Search(recordtype) {
 	this.filterExpressions = [];
 	// Set internal id of saved search to null
 	this.internalId = null;
+	this.noSavedColumns = false;
 	// If record type/ID is supplied, set it now, otherwise default to null
 	if (recordtype != null && recordtype != "") {
 		this.recordType = recordtype;
 	}
 
-	// helper function to verify the value is empty or null
+	// Helper function to verify the value is empty or null
 	function isNullOrEmpty(val) {
-		if (val == null || val == '') {
+		if (val == null || val == '' || val ==[] || val == {}) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
+	
+	/**
+	 * Remove all columns included in the search
+	 * @param none
+	 * 
+	 */
+	this.removeColumns = function() {
+		this.noSavedColumns = true;
+	}
 
 	/**
 	 * Add a column to include in the search
@@ -100,9 +112,9 @@ function Search(recordtype) {
 				} else if (column.hasOwnProperty("columnName") && column.columnName != null) {
 					paramColName = column.columnName;
 				} else if (column.hasOwnProperty("columnname") && column.columnname != null) {
-					paramColName = column.columnName;
+					paramColName = column.columnname;
 				} else if (column.hasOwnProperty("column") && column.column != null) {
-					paramColName = column.columnName;
+					paramColName = column.column;
 				} else {
 					throw nlapiCreateError('search.addColumn() - Required Argument Missing', 'The required argument <em>columnName</em> is missing. This argument is required.<br>Received: ' + JSON.stringify(column));
 				}
@@ -215,6 +227,14 @@ function Search(recordtype) {
 	}
 
 	/**
+	 * Set filter expression - Replaces any existing filters
+	 * @param {array} expression - array structure describing search expression
+	 */
+	this.setFilter = function(filterArray) {
+		this.filters = filterArray;
+	}
+	
+	/**
 	 * Set the type of record to search for
 	 * @param {string} type - internalid of record type to search for
 	 */
@@ -228,8 +248,12 @@ function Search(recordtype) {
 	 * @param {string} internalid - internalid of existing saved search
 	 */
 	this.useSavedSearch = function(internalid) {
+		if (!isNullOrEmpty(internalid)) {
 			this.internalId = internalid;
-		} // end function useSavedSearch
+			// If internal id of a saved search is provided, load that saved search
+			this.savedsearch = nlapiLoadSearch(this.recordType, this.internalId);
+		}
+	} // end function useSavedSearch
 
 
 	/**
@@ -242,13 +266,19 @@ function Search(recordtype) {
 				this.recordType = recordtype;
 			}
 			if (this.internalId != null) {
-				// If internal id of a saved search is provided, load 
-				// that saved search and create a new search based on it
+				// If internal id of a saved search is provided, load that saved search
 				var savedsearch = nlapiLoadSearch(this.recordType, this.internalId);
-				// Add new filters to saved filters
+				// Add new filters to saved search filters
 				var newfilters = savedsearch.getFilters().concat(this.filters);
-				// Add new columns to saved columns
-				var newcolumns = savedsearch.getColumns().concat(this.columns);
+				// If existing columns in saved search should not be use, replace then
+				var newcolumns = [];
+				if (this.noSavedColumns) {
+					savedsearch.setColumns(this.columns);
+					newcolumns = this.columns;
+				} else {
+					// Add new columns to saved search columns
+					newcolumns = savedsearch.getColumns().concat(this.columns);
+				}
 				// Perform the search
 				var newsearch = nlapiCreateSearch(savedsearch.getSearchType(), newfilters, newcolumns);
 				// 
