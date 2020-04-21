@@ -74,7 +74,7 @@ Returns a nlobjSearchResult object.
 
 ### Example Code ###
 ```javascript
-var search = new Search2('case');
+var search = new Search('case');
 search.addColumn({"name":"internalid"});
 search.addColumn({"name":"itemname","sorted":true});
 search.addColumn({"name":"createddate"});
